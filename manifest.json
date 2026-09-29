@@ -78,6 +78,14 @@
     6
    ],
    [
+    10,
+    6
+   ],
+   [
+    11,
+    6
+   ],
+   [
     6,
     7
    ],
@@ -94,6 +102,14 @@
     7
    ],
    [
+    10,
+    7
+   ],
+   [
+    11,
+    7
+   ],
+   [
     6,
     8
    ],
@@ -110,6 +126,14 @@
     8
    ],
    [
+    10,
+    8
+   ],
+   [
+    11,
+    8
+   ],
+   [
     6,
     9
    ],
@@ -124,8 +148,69 @@
    [
     9,
     9
+   ],
+   [
+    10,
+    9
+   ],
+   [
+    11,
+    9
+   ],
+   [
+    6,
+    10
+   ],
+   [
+    7,
+    10
+   ],
+   [
+    8,
+    10
+   ],
+   [
+    9,
+    10
+   ],
+   [
+    10,
+    10
+   ],
+   [
+    11,
+    10
+   ],
+   [
+    6,
+    11
+   ],
+   [
+    7,
+    11
+   ],
+   [
+    8,
+    11
+   ],
+   [
+    9,
+    11
+   ],
+   [
+    10,
+    11
+   ],
+   [
+    11,
+    11
    ]
-  ]
+  ],
+  "extent": [
+   -5120.0,
+   10240.0
+  ],
+  "note": "the hero tiles cover x and z -5120 to 10240, whole level 0 tiles, so every level 0 node over them has all its 10 m children; the hero square (buildings, the dam, hero.jpg) is -5120 to 5120. Level 0 to 3 are built from the hero over it: level 0 is every third hero sample there."
  },
  "canopy": {
   "tiling": "level 0",
@@ -190,7 +275,7 @@
     137,
     121
    ],
-   "dam": 141,
+   "dam": 142,
    "notes": {
     "hero": "0.043% of pixels no data, cloud or shadow (the scene classification's, and 33 clouds found by colour), grown by 30 m and filled from the nearest good one",
     "ring": "0.492% of pixels no data, cloud or shadow (the scene classification's, and 33 clouds found by colour), grown by 30 m and filled from the nearest good one"
@@ -506,19 +591,19 @@
   }
  ],
  "bytes": {
-  "total": 19109774,
+  "total": 21752483,
   "byGroup": {
    "0": 4755528,
    "1": 1188882,
    "2": 528392,
    "3": 132098,
    "canopy": 2377764,
-   "dam.json": 20541,
-   "hero": 2113568,
-   "imagery": 551993,
-   "masks": 2040367,
-   "osm": 5391030,
-   "water.json": 9611
+   "dam.json": 21473,
+   "hero": 4755528,
+   "imagery": 552009,
+   "masks": 2040060,
+   "osm": 5391134,
+   "water.json": 9615
   }
  },
  "files": {
@@ -535,20 +620,20 @@
   "0/1_4.bin": "d3c1a29ef1ee5e3cffcfdbdfab21d7fab74309a54bddaf5c83b6814af5ac320b",
   "0/1_5.bin": "085c98f94b8399d31f611ea1ea638fe8d0e19f6c0b1073d096e2efa2edaa3e72",
   "0/2_0.bin": "b421d8e0e00dbaf0e10b6aa5c0ec2f2bfca210406a2bf8f136bc1c858f453c7a",
-  "0/2_1.bin": "59f25d14a4a948240be525a205a441d2a4f2fca3b363a40409c1744fd22b4981",
-  "0/2_2.bin": "235eef786f2d816280bb935904897c082ce7f2f30845f0a38cf27507decfe568",
-  "0/2_3.bin": "40b1508645eb5e1288efa96710224fb741c2a38319b48c31323f7e020edc6179",
-  "0/2_4.bin": "286690aa3ace444d67a262dc623e7fd5f4ad95f7eb758df0ad8a2d40cb8eb76f",
+  "0/2_1.bin": "bd02aa3fa2b8d1c1ee545beaebec8d3c7121ac83d7a1c1f9d5460d0b534fca70",
+  "0/2_2.bin": "bbe76228ed0300522b612a2850ebf8a9aeeeead89ad08bf0a31c282079969105",
+  "0/2_3.bin": "9c14b529ce44fd2f9e1cb7f39ef27fbe0090e02c155fd877688ffa71c4f3c665",
+  "0/2_4.bin": "744dc0bdbde6ecbd2c55ad6af9cf6c743e4fdbfcacd404654fb98f5892227149",
   "0/2_5.bin": "b98a0a8603076811b3f7400a55f992563b6e65e765d951f262a4ac080f095153",
   "0/3_0.bin": "bd411acbf648de7a8b753cb580da9571a8f25ca3771335e88eb788f00b214762",
-  "0/3_1.bin": "02b2945f524919fbdc56b1d77b1ac39747f1abed9affcd1f5752362a71030bc6",
-  "0/3_2.bin": "1296762c707d270680b417b2e885fdd5b82385eeefc0d083baf85b117b410d03",
-  "0/3_3.bin": "2104937cc97296b52815b99bd17b44b9adfb7c8ca80715cb25ae60333a413eef",
+  "0/3_1.bin": "20d802cba4d5122fad5c1535baaa232a15458e1019d48bf21eca79a646293e05",
+  "0/3_2.bin": "e4c1a04f437e1b6ba2d882bf1fb71d7f20752c88fbd7e530d481efb623fe3873",
+  "0/3_3.bin": "f3eea7fe8b597a47d3a4763f12506024c4db890f799436dec9339be713d2e719",
   "0/3_4.bin": "2ee4fc7db7c1dfd34aa663be2828eaea0b19cd7a8dd202303671f0e2249f24ce",
   "0/3_5.bin": "d31ee823b18ada76b4bef9aa84e539f9683434a011fc5375a287a9e22bb25859",
   "0/4_0.bin": "7e27472ee48462e9dd27f473ebe50848af54ee517a0037a7452aa512431ac332",
   "0/4_1.bin": "7f7da3d4e50f4021869b9b7e5d26d5b9a294fba6bae7883fb1835af55e7f19a2",
-  "0/4_2.bin": "a470f430a029b18fe3f31c0442ee28b0558ed9fdd5ff573c63e2127930fe3f14",
+  "0/4_2.bin": "b6f2a91e5f33e1a6cd2b3d505cda6d8dcdba2b46142aac29e3e3bf21b8061f73",
   "0/4_3.bin": "b24c0995d6f1333e820dd35d305dc9ec863e9cded44866e80956f8d3b23019ad",
   "0/4_4.bin": "dde9eab16ac5d12389cd06c16a034248f5fc70cfc943a2e3dab29fefb86dbebb",
   "0/4_5.bin": "86b6c43d61ac669c220330dd4af5981c50fede457659de701539ef5d22416be0",
@@ -561,17 +646,17 @@
   "1/0_0.bin": "e5595b9072e728b825c4f452959a27ec4e82cecca9dd290ef1b4f16691550ea7",
   "1/0_1.bin": "4846584140ccec09dd094860c68923a3420bb8ca893f5c19e139109ff4498921",
   "1/0_2.bin": "5a527aafb5ab209742549713a820ada6a100313cab9910303252dbc62c968a5b",
-  "1/1_0.bin": "bbb12d9ab921c2d5c6d10746b00c484be23f6fa316a0f776dd9a9f4ec3074c34",
-  "1/1_1.bin": "5d70fffe38da650ea3df17d1d5969eca3366ef5fa15116ec6c8d79678c2b621b",
-  "1/1_2.bin": "fd35f997c3223c36a6102f64d20288e8d06e81c183c3a0d10e543e010428c9ee",
+  "1/1_0.bin": "f63b47c264d003f77d914508ebc4cf57f4c733cf0a7ff82b7b6ad57d0bd7ce82",
+  "1/1_1.bin": "68a7611d8f519821ff4e30db668f85e9153f7a131d28fd79c5d96a74fb491f7b",
+  "1/1_2.bin": "ccd5758dfcaf46a54e8d2fd4736a948d62f73f93c7db58493d98b5de9bf92c41",
   "1/2_0.bin": "c13c275fe710bc56bfdd646032d6556f05ac2eca60001a3c6f9b526c61e29ef2",
-  "1/2_1.bin": "19d19e8c6a92b3ceae219e8f046b561aa353fa5548ed3068929ecc58d9ffc1fc",
+  "1/2_1.bin": "8c611b2463c7ac1e4b661c108e050419d9bf2fb965eb7bf4a29e77c7d859e4a1",
   "1/2_2.bin": "168e0160eb09a282ac8ebc3fb0c190e48cb22c4ee5924d22e4049d88f321edab",
-  "2/0_0.bin": "bc5a6de0115a29dc820567b9dbeb2daa8c0b8d74418081086bef89cdab2549f7",
-  "2/0_1.bin": "f520939dd0a99f33cf0ccd8276b04c1f34bd62370fdc8ad50b45cac1064cb1c9",
-  "2/1_0.bin": "5c04b789f987cd3f22c01ff6c64fe5af6d4b9a2b94bad859bb9fb637210e489b",
+  "2/0_0.bin": "92960aaf3303a98b5891966598e2871413d4ee74c9c4a143f84db2801f5248af",
+  "2/0_1.bin": "bbee3a9ac32f0dd1c96e89509c3087ec28de8095a3faab17903d87d9f70d4d31",
+  "2/1_0.bin": "1daea000e89d23b656f4ed725cd160ea7e2863672e7222065f0a510dddc6b4d0",
   "2/1_1.bin": "b9c7b9bebb66d9e45ad11893197c2559077e0fc12d923d63b9d42e659ec7975e",
-  "3/0_0.bin": "935614904043c6fa5dc1fa5f9d81f8e3ad07e30bd436f64c79ecdf7703adcf42",
+  "3/0_0.bin": "eac301068e41078cee71f504c9bcc36f131a93b7da327d88bc49cd2a737158f2",
   "canopy/0_0.bin": "5495ff059c53655f8920a839dcaa51359b5d91c669a139e60d037cfea742965b",
   "canopy/0_1.bin": "2dc3f87786de4c04c6e2f370177e734deff0a3c354040d920e388300eda6a4bf",
   "canopy/0_2.bin": "f5f89ad692cd7e6427f5f0452080de0e811db1ed56a8a8b8f88775979dfd1a51",
@@ -608,32 +693,52 @@
   "canopy/5_3.bin": "0cabdc1899abd26dffe172bd25d2c49dca0fbd8309dbb638d71709ac76bb4dbf",
   "canopy/5_4.bin": "934122731adf3332a11b79f737360f65ab9b549f8f1fe09e1d3f30f36fafbb82",
   "canopy/5_5.bin": "84817309189507f778363371fb92d6fef61f9de500c5a61d5a94d845a909cd66",
-  "dam.json": "cc84b38ef29c8f375792a23b1acf550207a89fc67cac4a662e03457735e0169a",
+  "dam.json": "d72f3fecbbc48946c11c7698181153da6db67494b6f00c5f3052463aefe6090b",
+  "hero/10_10.bin": "b2aa94dd03026b55ca6a82c95d79c0bd9eacd6778366c300e15a60f76de73d4e",
+  "hero/10_11.bin": "5daee3f6f61f805a32ccfa7467eee49044c5d32a1dfa0827d0e767b0f3b92c33",
+  "hero/10_6.bin": "67ce2a4367784664ec32e5ac1ca906977b63b75af40fcc24434b72819b038f56",
+  "hero/10_7.bin": "10d86d9b7b0e6b279d2df1af03424b7b67759b359cfd7f69d4035fbf0c05f948",
+  "hero/10_8.bin": "b278d5b0cac934ee895c8b23a84017da2f891bfe367d5946f101b75900a5d748",
+  "hero/10_9.bin": "c270fcea5963f4939eeb7caa5de0c6cd604f4ca288c8e91dd50295e8dd35307d",
+  "hero/11_10.bin": "dc9458b01de5cda2fb567e4413072319d9f6a10716642c09122d6714c419ac07",
+  "hero/11_11.bin": "abe4a1514b63983eb1ba5cc6b5e9e40d8785757e0dda34548d4da638f222565f",
+  "hero/11_6.bin": "9e59f98cab226a82891570caf2b860f38c11e5719f7d6613a14d27912bdfc341",
+  "hero/11_7.bin": "8b69ccbc6247b42a07e47d9d038bc1c16a773b1b071aa5d1d56883e0bcc18c1e",
+  "hero/11_8.bin": "7929f0c22129d9079752ddb251e47f6bac9ba0bdc07c7a5ca19128974d84b60b",
+  "hero/11_9.bin": "31d69a2a2b4b53966305c0496bb9bbef35070060fc0d91942ea9dbf5a04bb6ef",
+  "hero/6_10.bin": "cb7a352937f1ae6dabdbeeefa4d3f60e17069b11649481d32b7ac68a88981020",
+  "hero/6_11.bin": "8c11fdf4725ce9ce54991e90231503af8374340bcfbbba3ded4ffb955d214019",
   "hero/6_6.bin": "38c2d4e8aad573c6c5145d11dcb14cd192aa149f11da58a17ff56eea4665921c",
   "hero/6_7.bin": "ff32c8be434d8eb8685ef89091ba5d649b64422bbe4cb13d8c2297eab2cf8aff",
   "hero/6_8.bin": "e8b3c7b8bf7382a8c2310e6e35336e1d70276feea83239393361cdefd697c303",
   "hero/6_9.bin": "1f3ef139acf58633b02af107e9e4b2c4f14ccaa1f86496e2613c48706a2314ac",
+  "hero/7_10.bin": "f772c389cf34ecdef967890115b6495f07e75befcce2f32d84509ad83a2cd376",
+  "hero/7_11.bin": "067af62721508882b855c737718b2104ba672bf1e01f7994fd9ca78ddba367b1",
   "hero/7_6.bin": "faef9edab006702e2365014dedef21b4c6755d3f91ddc3135fdc8486bdad3c98",
-  "hero/7_7.bin": "74a8f647e3f45816a30be6acb1220d879ee22d0cad23b136c2a4a33eb7d528bc",
+  "hero/7_7.bin": "1cbe04a36be1fa89525704444fa38f770a6a17510684400f8bc842ba1b3963c8",
   "hero/7_8.bin": "3db7e6e3a34e2a64847d36bf20da699fd47af231a641f26930bd2b9b2d9e1825",
   "hero/7_9.bin": "f2d5f9e94bc8d921c84687826a630b173156055ae1c57693e6454512ecd5d3fa",
+  "hero/8_10.bin": "56ea0ab204bfa08889992c3932cdaf9d4aa13891420769591f35114ad2a9eb68",
+  "hero/8_11.bin": "59f465427ed593970a31a34c9bf82b10774b1635279a62786b43619f85056040",
   "hero/8_6.bin": "1cc6832f0d933a64f1bdb0b0c6ef8a3569e5c539ed8b84adb211047afd45068d",
-  "hero/8_7.bin": "90395428861eef1f2ce8c720f51bc70299828c88a5d56090c15a1fd80af9b87c",
+  "hero/8_7.bin": "484b75409da26edc67653f72786e6a972824c2b87cfe8f40901888b99f7f9596",
   "hero/8_8.bin": "0ffb07b3a5401ce523da3e870334c03b7fbdbf8ad6fef3fefa74ef2bd890d207",
   "hero/8_9.bin": "266e3ae63159763c7f6d6e579f0b7e0453dbb70a368eb709f55e0b6fb175310a",
+  "hero/9_10.bin": "51ddc9c8dfc43e65de3efc717d88e7eed7c6d3e9dcf7610a6be6d1ecae1d2659",
+  "hero/9_11.bin": "039d2f791f9c0ad9bbe6182a72eb80c70e13ce511c2c41a16876d12191315298",
   "hero/9_6.bin": "b812bb47bd47fdd2e84b03e1814e908390cd4f43ee3b4884d053703467db8a04",
   "hero/9_7.bin": "b812bb47bd47fdd2e84b03e1814e908390cd4f43ee3b4884d053703467db8a04",
   "hero/9_8.bin": "4bb45f025774c574e9bf76d454299b7e98d8de1328167b07d00373bd8ac39567",
   "hero/9_9.bin": "eb3ba53519f86bad15bfc6dd5e66cbc835ac9be797fde4f4ced7a4eeaeaa357a",
-  "imagery/hero.jpg": "d795bf61cf94bb89b4033b4ed983f91a600f2b1e2a02a4c82a48ed23d543c322",
-  "imagery/ring.jpg": "cd847de46f31025c7e349cc3821e6b22ce8c8101e55b5b3439045863f5b01240",
-  "masks/hero.png": "fdcd1f7adf446fafe3b8898f7bdd83ff9b69e43467cb840cb975271177352dcb",
-  "masks/ring.png": "8b3602acd9acecf514fa8a38b518bbf863b4b65b852f7202f6be4e1123710441",
+  "imagery/hero.jpg": "e7f921626b65840e3bab9ce4b8eaa5d4415729b1545bdaaeed742d53b98099d5",
+  "imagery/ring.jpg": "85f0497695122e9fba791ed8cd4d85e1c0ec267a14719be5d39020f2f5498531",
+  "masks/hero.png": "4705b35a94d5e231f630de0b7859c7d9807151482125935e0f237579041f7caf",
+  "masks/ring.png": "9b9c9f7f22ddaffc4ae3466a6379ff18abd9682608cd053dbd833aa90aaa8c61",
   "osm/buildings.json": "506a92f9c992773312d8e3caca4f95eec68376ae09ba0865f6e2ab79676023db",
   "osm/landuse.json": "22d59393f8caaef3204d10c04aba7612aa470164aa426c7aa6d26a31dc031518",
   "osm/power.json": "5ebb236b1a89bff47bea2692a432651b1a80df0e9acf51ef7f75de6bca9a24a8",
-  "osm/roads.json": "d4c39e9510e770a9b111a38dd9af8223015283a33b849d65e282b220084074c2",
+  "osm/roads.json": "2644db88b66f296a30e34525227abc1be35febd8d035025f9c40f2abf19a5857",
   "osm/trees.json": "4a028cd94f614be56702762f19f90193f257cf7b7f402738f294beccc400b47f",
-  "water.json": "e94eee2eb2dacce4081d6619c1f98a41da5119f08cc8fcb633e3174c68d91725"
+  "water.json": "647a605e42665c5aeffd2e1366fc198af6ca73fd0e06ce84ae5fda6b726922d6"
  }
 }
