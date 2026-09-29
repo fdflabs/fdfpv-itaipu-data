@@ -1,0 +1,639 @@
+{
+ "name": "Itaipu",
+ "built": "2026-09-29",
+ "contract": "docs/ITAIPU-PLAN.md",
+ "frame": {
+  "crs": "EPSG:32721",
+  "E0": 742500.0,
+  "N0": 7186000.0,
+  "Y0": 0.0,
+  "x": "E - E0",
+  "z": "-(N - N0)",
+  "y": "metres above EGM2008 (both DEMs' datum), no offset",
+  "hero": [
+   -5120.0,
+   5120.0
+  ],
+  "ring": [
+   -20480.0,
+   20480.0
+  ]
+ },
+ "encoding": {
+  "type": "uint16le",
+  "samples": 257,
+  "order": "x fastest, then z",
+  "value": "round((y + 1000) * 10)",
+  "origin": "tile (i, j) of a level starts at x, z = -20480 + (i, j) * tileSize"
+ },
+ "levels": [
+  {
+   "level": 0,
+   "cell": 30.0,
+   "tileSize": 7680.0,
+   "tiles": 36,
+   "grid": 6
+  },
+  {
+   "level": 1,
+   "cell": 60.0,
+   "tileSize": 15360.0,
+   "tiles": 9,
+   "grid": 3
+  },
+  {
+   "level": 2,
+   "cell": 120.0,
+   "tileSize": 30720.0,
+   "tiles": 4,
+   "grid": 2
+  },
+  {
+   "level": 3,
+   "cell": 240.0,
+   "tileSize": 61440.0,
+   "tiles": 1,
+   "grid": 1
+  }
+ ],
+ "hero": {
+  "level": -1,
+  "cell": 10.0,
+  "tileSize": 2560.0,
+  "tiles": [
+   [
+    6,
+    6
+   ],
+   [
+    7,
+    6
+   ],
+   [
+    8,
+    6
+   ],
+   [
+    9,
+    6
+   ],
+   [
+    6,
+    7
+   ],
+   [
+    7,
+    7
+   ],
+   [
+    8,
+    7
+   ],
+   [
+    9,
+    7
+   ],
+   [
+    6,
+    8
+   ],
+   [
+    7,
+    8
+   ],
+   [
+    8,
+    8
+   ],
+   [
+    9,
+    8
+   ],
+   [
+    6,
+    9
+   ],
+   [
+    7,
+    9
+   ],
+   [
+    8,
+    9
+   ],
+   [
+    9,
+    9
+   ]
+  ]
+ },
+ "canopy": {
+  "tiling": "level 0",
+  "type": "uint8",
+  "unit": "m",
+  "max": 40,
+  "tiles": 36,
+  "path": "canopy/{i}_{j}.bin",
+  "from": "Copernicus GLO-30 minus ANADEM on level 0's samples, rounded, clamped to 0..40, 0 on the two water bodies: forest canopy and buildings"
+ },
+ "water": {
+  "file": "water.json",
+  "bodies": [
+   {
+    "name": "reservoir",
+    "y": 219.0,
+    "bedDepth": 3.0,
+    "bedDepthRing": 1.0,
+    "vertices": 232
+   },
+   {
+    "name": "river",
+    "y": 103.5,
+    "bedDepth": 3.0,
+    "bedDepthRing": 1.0,
+    "vertices": 232
+   }
+  ],
+  "levelsFrom": "where Copernicus GLO-30 flattened each body (docs/ITAIPU-PLAN.md section 5); Itaipu publishes 220.30 m normal upstream and 104.00 m normal downstream"
+ },
+ "imagery": {
+  "hero": {
+   "file": "imagery/hero.jpg",
+   "masks": "masks/hero.png",
+   "size": 1024,
+   "cell": 10.0,
+   "square": "hero"
+  },
+  "ring": {
+   "file": "imagery/ring.jpg",
+   "masks": "masks/ring.png",
+   "size": 1024,
+   "cell": 40.0,
+   "square": "ring"
+  },
+  "pixels": "pixel (0, 0) covers the square's north-west corner, x and z from -half; sRGB",
+  "colour": {
+   "scene": [
+    "S2B_21JYM_20251220_0_L2A",
+    "S2B_21JYN_20251220_0_L2A"
+   ],
+   "datetime": "2025-12-20T13:49:38.040000Z",
+   "bands": {
+    "r": "B04",
+    "g": "B03",
+    "b": "B02"
+   },
+   "curve": "sRGB transfer function of min(1, reflectance / 0.28)",
+   "white": 0.28,
+   "water": [
+    113,
+    137,
+    121
+   ],
+   "dam": 141,
+   "notes": {
+    "hero": "0.043% of pixels no data, cloud or shadow (the scene classification's, and 33 clouds found by colour), grown by 30 m and filled from the nearest good one",
+    "ring": "0.492% of pixels no data, cloud or shadow (the scene classification's, and 33 clouds found by colour), grown by 30 m and filled from the nearest good one"
+   }
+  },
+  "masks": {
+   "channels": [
+    "forest",
+    "field",
+    "red soil",
+    "urban"
+   ],
+   "sum": 255,
+   "weights": {
+    "ndvi": "(B08 - B04) / (B08 + B04)",
+    "veg": "smoothstep(0.2, 0.55, ndvi)",
+    "tall": "smoothstep(2, 8, canopy height in m); 1 inside OSM landuse=forest or natural=wood where veg > 0.5",
+    "redness": "smoothstep(1.1, 1.4, B04 / B03)",
+    "forest": "veg * tall",
+    "field": "veg * (1 - tall)",
+    "soil": "(1 - veg) * redness",
+    "urban": "(1 - veg) * (1 - redness) + 0.6 * osm_urban * (1 - forest), osm_urban being OSM buildings, built-up landuse and roads at their width",
+    "normalise": "each divided by their sum; floored to 1/255 and the remainder added to the largest",
+    "water": "soil 255 (the bed), for the two bodies and for any other water the scene classification marks",
+    "dam footprints": "urban 255"
+   },
+   "cover": {
+    "hero": "forest 28.0%, field 19.7%, soil 44.3%, urban 8.0%",
+    "ring": "forest 22.5%, field 50.0%, soil 20.5%, urban 7.0%"
+   }
+  }
+ },
+ "dam": {
+  "file": "dam.json",
+  "parts": [
+   "right lateral dam",
+   "main dam and connecting blocks",
+   "diversion structure",
+   "left lateral dam",
+   "spillway",
+   "powerhouse",
+   "penstocks",
+   "intakes",
+   "rockfill dam",
+   "left bank earth dam",
+   "right bank earth dam",
+   "Hernandarias dike",
+   "whole dam"
+  ]
+ },
+ "osm": {
+  "files": {
+   "buildings": "osm/buildings.json",
+   "roads": "osm/roads.json",
+   "power": "osm/power.json",
+   "trees": "osm/trees.json",
+   "landuse": "osm/landuse.json"
+  },
+  "counts": {
+   "buildings": 10532,
+   "roads": 1877,
+   "power": {
+    "towers": 560,
+    "lines": 97,
+    "substations": 6,
+    "plants": 2
+   },
+   "trees": 20,
+   "landuse": 4574
+  },
+  "data": {
+   "brazil-sul": "2026-09-28T20:23:05Z",
+   "paraguay": "2026-09-28T20:23:05Z"
+  }
+ },
+ "attribution": [
+  "Elevation: ANADEM v1, Laipelt et al. 2024, Remote Sensing 16(13):2321, ANA / IPH-UFRGS, CC BY 4.0, resampled and edited",
+  "Copernicus DEM GLO-30: (c) DLR e.V. 2010-2014 and (c) Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA; all rights reserved",
+  "Contains modified Copernicus Sentinel data 2025 and 2026, processed by ESA",
+  "(c) OpenStreetMap contributors, ODbL, openstreetmap.org/copyright"
+ ],
+ "loadingScreen": "(c) OpenStreetMap contributors",
+ "sources": [
+  {
+   "what": "elevation",
+   "title": "ANADEM v1 bare earth terrain model (ANA and IPH-UFRGS)",
+   "licence": "CC BY 4.0: attribution, and changes indicated (resampled to 30 and 10 m, water beds carved, the dam burnt in)",
+   "usedFor": "every elevation tile (levels 0 to 3, hero), and the canopy tiles with Copernicus",
+   "files": [
+    {
+     "name": "anadem",
+     "url": "https://metadados.snirh.gov.br/files/anadem_v1_tiles/anadem_v1_21J.tif",
+     "title": "ANADEM v1 bare earth DTM, MGRS 21J, cut to the Itaipu DEM square, EGM2008 heights",
+     "licence": "CC BY 4.0 (OpenTopography dataset OTSDEM.082025.4674.1). Cite Laipelt et al. 2024, \"ANADEM: A Digital Terrain Model for South America\", Remote Sensing 16(13):2321, doi:10.3390/rs16132321; ANA / IPH-UFRGS",
+     "published": null,
+     "retrieved": "2026-09-29T15:07:49Z",
+     "bytes": 6475547,
+     "sha256": "7b817c760621e3f8835fbbada9a5ec68e554755f8a3fc6c867b18ee9afa42a7a"
+    }
+   ]
+  },
+  {
+   "what": "surface model",
+   "title": "Copernicus DEM GLO-30 (DSM)",
+   "licence": "Copernicus DEM licence: free use, copy, modification and redistribution with the notice",
+   "usedFor": "the water levels and extents (water.json, the beds in the tiles), the canopy tiles, the spillway chute profile",
+   "files": [
+    {
+     "name": "cop30",
+     "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_S26_00_W055_00_DEM/Copernicus_DSM_COG_10_S26_00_W055_00_DEM.tif",
+     "title": "Copernicus DEM GLO-30 (DSM), tile S26 W055, 1 arc second, EGM2008 heights",
+     "licence": "Copernicus DEM GLO-30, free and open licence (ESA, \"Licence for the use of the Copernicus WorldDEM-30\"): use, copy, modify and redistribute, including commercially, with the notice \"(c) DLR e.V. 2010-2014 and (c) Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA; all rights reserved\"",
+     "published": "Mon, 09 May 2022 15:02:13 GMT",
+     "retrieved": "2026-09-29T14:24:48Z",
+     "bytes": 41136564,
+     "sha256": "220474710e884aa26b4777b642b4e2e005cbab5f714b30f83252e9ea6e099bce"
+    }
+   ]
+  },
+  {
+   "what": "imagery",
+   "title": "Sentinel-2 L2A, Copernicus, via Element 84 Earth Search",
+   "licence": "Copernicus Sentinel data terms (Regulation (EU) 1159/2013): free, full and open, with the notice",
+   "usedFor": "imagery/*.jpg, masks/*.png; the 26 September 2026 scene is a reference for the running spillway only",
+   "files": [
+    {
+     "name": "s2_21JYM_blue",
+     "url": "https://sentinel-cogs.s3.us-west-2.amazonaws.com/sentinel-s2-l2a-cogs/21/J/YM/2025/12/S2B_21JYM_20251220_0_L2A/B02.tif",
+     "title": "Sentinel-2 L2A blue, tile 21JYM, cut to the fetch square",
+     "licence": "Copernicus Sentinel data, free, full and open (Commission Delegated Regulation (EU) No 1159/2013). Attribution: \"Contains modified Copernicus Sentinel data 2025, processed by ESA\"",
+     "published": "2025-12-20T13:49:38.040000Z",
+     "retrieved": "2026-09-29T14:35:34Z",
+     "bytes": 17628201,
+     "sha256": "6199a9ff3f092f35d3e3c53b415b6b4b96aa0e406bc33686805ea202534b1f5d"
+    },
+    {
+     "name": "s2_21JYM_green",
+     "url": "https://sentinel-cogs.s3.us-west-2.amazonaws.com/sentinel-s2-l2a-cogs/21/J/YM/2025/12/S2B_21JYM_20251220_0_L2A/B03.tif",
+     "title": "Sentinel-2 L2A green, tile 21JYM, cut to the fetch square",
+     "licence": "Copernicus Sentinel data, free, full and open (Commission Delegated Regulation (EU) No 1159/2013). Attribution: \"Contains modified Copernicus Sentinel data 2025, processed by ESA\"",
+     "published": "2025-12-20T13:49:38.040000Z",
+     "retrieved": "2026-09-29T14:35:39Z",
+     "bytes": 18236536,
+     "sha256": "adca63aa88c112b0127378c73346e9b274d6cb2aa735052a9b7dd70fb787ee32"
+    },
+    {
+     "name": "s2_21JYM_red",
+     "url": "https://sentinel-cogs.s3.us-west-2.amazonaws.com/sentinel-s2-l2a-cogs/21/J/YM/2025/12/S2B_21JYM_20251220_0_L2A/B04.tif",
+     "title": "Sentinel-2 L2A red, tile 21JYM, cut to the fetch square",
+     "licence": "Copernicus Sentinel data, free, full and open (Commission Delegated Regulation (EU) No 1159/2013). Attribution: \"Contains modified Copernicus Sentinel data 2025, processed by ESA\"",
+     "published": "2025-12-20T13:49:38.040000Z",
+     "retrieved": "2026-09-29T14:35:44Z",
+     "bytes": 18313282,
+     "sha256": "74ed179077b39ac17be5f30ef3b0a86bc45613f417c88185e50f1f48007b57a9"
+    },
+    {
+     "name": "s2_21JYM_nir",
+     "url": "https://sentinel-cogs.s3.us-west-2.amazonaws.com/sentinel-s2-l2a-cogs/21/J/YM/2025/12/S2B_21JYM_20251220_0_L2A/B08.tif",
+     "title": "Sentinel-2 L2A nir, tile 21JYM, cut to the fetch square",
+     "licence": "Copernicus Sentinel data, free, full and open (Commission Delegated Regulation (EU) No 1159/2013). Attribution: \"Contains modified Copernicus Sentinel data 2025, processed by ESA\"",
+     "published": "2025-12-20T13:49:38.040000Z",
+     "retrieved": "2026-09-29T14:35:50Z",
+     "bytes": 21185721,
+     "sha256": "2a7da764f8b3c17f3b5930803124d34bbdeb10c9391d246e2753651f7efaa661"
+    },
+    {
+     "name": "s2_21JYM_scl",
+     "url": "https://sentinel-cogs.s3.us-west-2.amazonaws.com/sentinel-s2-l2a-cogs/21/J/YM/2025/12/S2B_21JYM_20251220_0_L2A/SCL.tif",
+     "title": "Sentinel-2 L2A scl, tile 21JYM, cut to the fetch square",
+     "licence": "Copernicus Sentinel data, free, full and open (Commission Delegated Regulation (EU) No 1159/2013). Attribution: \"Contains modified Copernicus Sentinel data 2025, processed by ESA\"",
+     "published": "2025-12-20T13:49:38.040000Z",
+     "retrieved": "2026-09-29T14:35:52Z",
+     "bytes": 215817,
+     "sha256": "d435ebf1bd47b5d837636a9e7c9d872884f0bff498409b6275fa190976d6989a"
+    },
+    {
+     "name": "s2_21JYN_blue",
+     "url": "https://sentinel-cogs.s3.us-west-2.amazonaws.com/sentinel-s2-l2a-cogs/21/J/YN/2025/12/S2B_21JYN_20251220_0_L2A/B02.tif",
+     "title": "Sentinel-2 L2A blue, tile 21JYN, cut to the fetch square",
+     "licence": "Copernicus Sentinel data, free, full and open (Commission Delegated Regulation (EU) No 1159/2013). Attribution: \"Contains modified Copernicus Sentinel data 2025, processed by ESA\"",
+     "published": "2025-12-20T13:49:23.443000Z",
+     "retrieved": "2026-09-29T14:35:55Z",
+     "bytes": 7616782,
+     "sha256": "b7fccba280bf77094f07a985491c566477892748bcc10fb2514a2cf22ee6d50e"
+    },
+    {
+     "name": "s2_21JYN_green",
+     "url": "https://sentinel-cogs.s3.us-west-2.amazonaws.com/sentinel-s2-l2a-cogs/21/J/YN/2025/12/S2B_21JYN_20251220_0_L2A/B03.tif",
+     "title": "Sentinel-2 L2A green, tile 21JYN, cut to the fetch square",
+     "licence": "Copernicus Sentinel data, free, full and open (Commission Delegated Regulation (EU) No 1159/2013). Attribution: \"Contains modified Copernicus Sentinel data 2025, processed by ESA\"",
+     "published": "2025-12-20T13:49:23.443000Z",
+     "retrieved": "2026-09-29T14:35:57Z",
+     "bytes": 7879764,
+     "sha256": "fac5ca1e772107ef665b08dd40c68671d6c02c66b2a855774fa2120cd7b5d471"
+    },
+    {
+     "name": "s2_21JYN_red",
+     "url": "https://sentinel-cogs.s3.us-west-2.amazonaws.com/sentinel-s2-l2a-cogs/21/J/YN/2025/12/S2B_21JYN_20251220_0_L2A/B04.tif",
+     "title": "Sentinel-2 L2A red, tile 21JYN, cut to the fetch square",
+     "licence": "Copernicus Sentinel data, free, full and open (Commission Delegated Regulation (EU) No 1159/2013). Attribution: \"Contains modified Copernicus Sentinel data 2025, processed by ESA\"",
+     "published": "2025-12-20T13:49:23.443000Z",
+     "retrieved": "2026-09-29T14:36:02Z",
+     "bytes": 7943582,
+     "sha256": "c923c06d9b55051ca140c8e25ead52656679f42f8a4e5734ef8e4f3567839ad0"
+    },
+    {
+     "name": "s2_21JYN_nir",
+     "url": "https://sentinel-cogs.s3.us-west-2.amazonaws.com/sentinel-s2-l2a-cogs/21/J/YN/2025/12/S2B_21JYN_20251220_0_L2A/B08.tif",
+     "title": "Sentinel-2 L2A nir, tile 21JYN, cut to the fetch square",
+     "licence": "Copernicus Sentinel data, free, full and open (Commission Delegated Regulation (EU) No 1159/2013). Attribution: \"Contains modified Copernicus Sentinel data 2025, processed by ESA\"",
+     "published": "2025-12-20T13:49:23.443000Z",
+     "retrieved": "2026-09-29T14:36:05Z",
+     "bytes": 8448816,
+     "sha256": "6d8327dc7e3ba5c5158e5070632b39898f89987880c169b5d1072e0de421eabd"
+    },
+    {
+     "name": "s2_21JYN_scl",
+     "url": "https://sentinel-cogs.s3.us-west-2.amazonaws.com/sentinel-s2-l2a-cogs/21/J/YN/2025/12/S2B_21JYN_20251220_0_L2A/SCL.tif",
+     "title": "Sentinel-2 L2A scl, tile 21JYN, cut to the fetch square",
+     "licence": "Copernicus Sentinel data, free, full and open (Commission Delegated Regulation (EU) No 1159/2013). Attribution: \"Contains modified Copernicus Sentinel data 2025, processed by ESA\"",
+     "published": "2025-12-20T13:49:23.443000Z",
+     "retrieved": "2026-09-29T14:36:05Z",
+     "bytes": 48898,
+     "sha256": "db3d40cb891bb5cd161f80d26a364628fb48736745c22c1617c7b5dc85df734c"
+    },
+    {
+     "name": "s2_spill_tci",
+     "url": "https://sentinel-cogs.s3.us-west-2.amazonaws.com/sentinel-s2-l2a-cogs/21/J/YM/2026/9/S2B_21JYM_20260926_0_L2A/TCI.tif",
+     "title": "Sentinel-2 L2A true colour, spillway running, hero square only",
+     "licence": "Copernicus Sentinel data, free, full and open (Commission Delegated Regulation (EU) No 1159/2013). Attribution: \"Contains modified Copernicus Sentinel data 2025, processed by ESA\"",
+     "published": "2026-09-26T13:49:39.227000Z",
+     "retrieved": "2026-09-29T15:14:41Z",
+     "bytes": 1797317,
+     "sha256": "0a397cf987b99c535cae2329352b265237271e263e0c02fd7989adbf25d61c38"
+    }
+   ]
+  },
+  {
+   "what": "OpenStreetMap",
+   "title": "OpenStreetMap, Geofabrik Paraguay and Brazil South extracts",
+   "licence": "ODbL 1.0: osm/*.json is a derived database offered under ODbL; attribution wherever the map is shown",
+   "usedFor": "osm/*.json, the dam axes and footprints in dam.json, the urban and forest parts of masks/*.png",
+   "files": [
+    {
+     "name": "osm",
+     "url": null,
+     "title": "OpenStreetMap, cut to the fetch square (buildings, barriers and trees to the hero square) from the Geofabrik Paraguay and Brazil South extracts",
+     "licence": "Open Database License 1.0 (ODbL). Attribution: \"(c) OpenStreetMap contributors\", https://www.openstreetmap.org/copyright",
+     "published": null,
+     "retrieved": "2026-09-29T15:06:18Z",
+     "bytes": 29874283,
+     "sha256": "c4094a56a26af0759a24e5623cd4df3ac7a7350dea9cd1ff263fd184ba597d66",
+     "extracts": {
+      "brazil-sul": {
+       "url": "https://download.geofabrik.de/south-america/brazil/sul-latest.osm.pbf",
+       "replicationTimestamp": "2026-09-28T20:23:05Z"
+      },
+      "paraguay": {
+       "url": "https://download.geofabrik.de/south-america/paraguay-latest.osm.pbf",
+       "replicationTimestamp": "2026-09-28T20:23:05Z"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "what": "dam figures",
+   "title": "Itaipu Binacional, www.itaipu.gov.br/energia pages",
+   "licence": "facts (dimensions and levels), cited by page and quote in dam.json; the pages are not redistributed",
+   "usedFor": "dam.json",
+   "files": [
+    {
+     "name": "itaipu_barragem",
+     "url": "https://www.itaipu.gov.br/energia/barragem",
+     "title": "Itaipu Binacional, Energia: barragem",
+     "licence": "Cited for facts (dimensions and levels) only; the page text is not redistributed",
+     "published": "Tue, 29 Sep 2026 14:20:42 GMT",
+     "retrieved": "2026-09-29T15:11:03Z",
+     "bytes": 2862204,
+     "sha256": "f645e5e125adec3b5f18b18a7bac8c65d571dfe32d857a217f71c5d9d92f8cbb"
+    },
+    {
+     "name": "itaipu_vertedouro",
+     "url": "https://www.itaipu.gov.br/energia/vertedouro",
+     "title": "Itaipu Binacional, Energia: vertedouro",
+     "licence": "Cited for facts (dimensions and levels) only; the page text is not redistributed",
+     "published": null,
+     "retrieved": "2026-09-29T15:11:03Z",
+     "bytes": 2820348,
+     "sha256": "6e1692dc1604ccce03a0f7a4f6859c98d6de3316249a17fdfeb20cb0945d6e41"
+    },
+    {
+     "name": "itaipu_casa-de-forca",
+     "url": "https://www.itaipu.gov.br/energia/casa-de-forca",
+     "title": "Itaipu Binacional, Energia: casa-de-forca",
+     "licence": "Cited for facts (dimensions and levels) only; the page text is not redistributed",
+     "published": "Tue, 29 Sep 2026 14:20:56 GMT",
+     "retrieved": "2026-09-29T15:11:03Z",
+     "bytes": 3268192,
+     "sha256": "1b7fb7fd7a6dcb9aa8f9d163ea79a840fb8d4a850556914fb083d1f8cb1f5f00"
+    },
+    {
+     "name": "itaipu_reservatorio",
+     "url": "https://www.itaipu.gov.br/energia/reservatorio",
+     "title": "Itaipu Binacional, Energia: reservatorio",
+     "licence": "Cited for facts (dimensions and levels) only; the page text is not redistributed",
+     "published": "Tue, 29 Sep 2026 14:20:51 GMT",
+     "retrieved": "2026-09-29T15:11:03Z",
+     "bytes": 2843851,
+     "sha256": "a1e6985bfd694f0ab4db3ca1eb8b12a59c3e652f2a5b88aeb2d90b35f9e82f2f"
+    }
+   ]
+  }
+ ],
+ "bytes": {
+  "total": 19109774,
+  "byGroup": {
+   "0": 4755528,
+   "1": 1188882,
+   "2": 528392,
+   "3": 132098,
+   "canopy": 2377764,
+   "dam.json": 20541,
+   "hero": 2113568,
+   "imagery": 551993,
+   "masks": 2040367,
+   "osm": 5391030,
+   "water.json": 9611
+  }
+ },
+ "files": {
+  "0/0_0.bin": "353b4ceebc769188aa3fc3a87d33d06dbf9444d5c0c735d906f79618e84435eb",
+  "0/0_1.bin": "0cfba352bd5c8eb88d526818451114e7d61e8a77985f542368ac6aa7ad691adb",
+  "0/0_2.bin": "07c2fb33c559673f877b62f7dc1370466f51c644ef4081589a066591b2a8dc5c",
+  "0/0_3.bin": "cb4f142bd4ead6b2a97e9b371852061c0a4dc42395d0a91244465a62fce62e03",
+  "0/0_4.bin": "f07b555071677f5b98e80cd1c036ef8755c18c9b2199b68d76dc93677b194ba3",
+  "0/0_5.bin": "21aac397ac315dbbc2132bd246784ae26b139e5bff703ace63cf20c62bbe94d0",
+  "0/1_0.bin": "693bbb6d9014fa4e359ff80373390137258a6dd7dd05cbde0c73ec1c102c4ce1",
+  "0/1_1.bin": "bc9727f7cce4bf8b9025a39b7174a4e75e331dd84467ced28c3cd21ee6c59766",
+  "0/1_2.bin": "c8be24c57fad8aaff63f2f92f92081489edf43864ab04d7787172d360e299234",
+  "0/1_3.bin": "61804b505403d153c390979ac0361a12895d27df015974729078451cda284d23",
+  "0/1_4.bin": "d3c1a29ef1ee5e3cffcfdbdfab21d7fab74309a54bddaf5c83b6814af5ac320b",
+  "0/1_5.bin": "085c98f94b8399d31f611ea1ea638fe8d0e19f6c0b1073d096e2efa2edaa3e72",
+  "0/2_0.bin": "b421d8e0e00dbaf0e10b6aa5c0ec2f2bfca210406a2bf8f136bc1c858f453c7a",
+  "0/2_1.bin": "59f25d14a4a948240be525a205a441d2a4f2fca3b363a40409c1744fd22b4981",
+  "0/2_2.bin": "235eef786f2d816280bb935904897c082ce7f2f30845f0a38cf27507decfe568",
+  "0/2_3.bin": "40b1508645eb5e1288efa96710224fb741c2a38319b48c31323f7e020edc6179",
+  "0/2_4.bin": "286690aa3ace444d67a262dc623e7fd5f4ad95f7eb758df0ad8a2d40cb8eb76f",
+  "0/2_5.bin": "b98a0a8603076811b3f7400a55f992563b6e65e765d951f262a4ac080f095153",
+  "0/3_0.bin": "bd411acbf648de7a8b753cb580da9571a8f25ca3771335e88eb788f00b214762",
+  "0/3_1.bin": "02b2945f524919fbdc56b1d77b1ac39747f1abed9affcd1f5752362a71030bc6",
+  "0/3_2.bin": "1296762c707d270680b417b2e885fdd5b82385eeefc0d083baf85b117b410d03",
+  "0/3_3.bin": "2104937cc97296b52815b99bd17b44b9adfb7c8ca80715cb25ae60333a413eef",
+  "0/3_4.bin": "2ee4fc7db7c1dfd34aa663be2828eaea0b19cd7a8dd202303671f0e2249f24ce",
+  "0/3_5.bin": "d31ee823b18ada76b4bef9aa84e539f9683434a011fc5375a287a9e22bb25859",
+  "0/4_0.bin": "7e27472ee48462e9dd27f473ebe50848af54ee517a0037a7452aa512431ac332",
+  "0/4_1.bin": "7f7da3d4e50f4021869b9b7e5d26d5b9a294fba6bae7883fb1835af55e7f19a2",
+  "0/4_2.bin": "a470f430a029b18fe3f31c0442ee28b0558ed9fdd5ff573c63e2127930fe3f14",
+  "0/4_3.bin": "b24c0995d6f1333e820dd35d305dc9ec863e9cded44866e80956f8d3b23019ad",
+  "0/4_4.bin": "dde9eab16ac5d12389cd06c16a034248f5fc70cfc943a2e3dab29fefb86dbebb",
+  "0/4_5.bin": "86b6c43d61ac669c220330dd4af5981c50fede457659de701539ef5d22416be0",
+  "0/5_0.bin": "1acdbffb9e3aa089ecc28d2e7da03f97a8726881d17dad8cdc3e161521248074",
+  "0/5_1.bin": "f04bd86fa650a678aa9ec23c97f9188f725529c2b9df0a8e9114059657d0c424",
+  "0/5_2.bin": "024215694e79c320f2d4b47cd7e73f34ec33d47b79b89a1752ef46d5661a7d1d",
+  "0/5_3.bin": "e3f51002dee496f5d979f41423bde491ba74ec9e6c157ee47674a71267a07654",
+  "0/5_4.bin": "5b23b8624b122c8a67fd54cd58f9d83e734123fd8e086872d822e354066d9f6f",
+  "0/5_5.bin": "a2de8852802daf48fcf1c33c15d5b7c3c031534bbdca5d6b92ad9498f740207c",
+  "1/0_0.bin": "e5595b9072e728b825c4f452959a27ec4e82cecca9dd290ef1b4f16691550ea7",
+  "1/0_1.bin": "4846584140ccec09dd094860c68923a3420bb8ca893f5c19e139109ff4498921",
+  "1/0_2.bin": "5a527aafb5ab209742549713a820ada6a100313cab9910303252dbc62c968a5b",
+  "1/1_0.bin": "bbb12d9ab921c2d5c6d10746b00c484be23f6fa316a0f776dd9a9f4ec3074c34",
+  "1/1_1.bin": "5d70fffe38da650ea3df17d1d5969eca3366ef5fa15116ec6c8d79678c2b621b",
+  "1/1_2.bin": "fd35f997c3223c36a6102f64d20288e8d06e81c183c3a0d10e543e010428c9ee",
+  "1/2_0.bin": "c13c275fe710bc56bfdd646032d6556f05ac2eca60001a3c6f9b526c61e29ef2",
+  "1/2_1.bin": "19d19e8c6a92b3ceae219e8f046b561aa353fa5548ed3068929ecc58d9ffc1fc",
+  "1/2_2.bin": "168e0160eb09a282ac8ebc3fb0c190e48cb22c4ee5924d22e4049d88f321edab",
+  "2/0_0.bin": "bc5a6de0115a29dc820567b9dbeb2daa8c0b8d74418081086bef89cdab2549f7",
+  "2/0_1.bin": "f520939dd0a99f33cf0ccd8276b04c1f34bd62370fdc8ad50b45cac1064cb1c9",
+  "2/1_0.bin": "5c04b789f987cd3f22c01ff6c64fe5af6d4b9a2b94bad859bb9fb637210e489b",
+  "2/1_1.bin": "b9c7b9bebb66d9e45ad11893197c2559077e0fc12d923d63b9d42e659ec7975e",
+  "3/0_0.bin": "935614904043c6fa5dc1fa5f9d81f8e3ad07e30bd436f64c79ecdf7703adcf42",
+  "canopy/0_0.bin": "5495ff059c53655f8920a839dcaa51359b5d91c669a139e60d037cfea742965b",
+  "canopy/0_1.bin": "2dc3f87786de4c04c6e2f370177e734deff0a3c354040d920e388300eda6a4bf",
+  "canopy/0_2.bin": "f5f89ad692cd7e6427f5f0452080de0e811db1ed56a8a8b8f88775979dfd1a51",
+  "canopy/0_3.bin": "5623ffeac1d01678ca1456336f8b1834fa6b9fbfc725917145c7637b0bd2c654",
+  "canopy/0_4.bin": "dfcd1fea7308d723b57923a81979f6c64960662e9e126510473a5b9925c76ac1",
+  "canopy/0_5.bin": "9869aa0c752ba3761b698733ec1a8054b07b907938661e390c85dcfef299d5e5",
+  "canopy/1_0.bin": "ca5717804649857b0e9f5cd64f8b9e9ef49517da759609dee0f408735eac5240",
+  "canopy/1_1.bin": "a76c8ee465df42b484b54ac514bf225a3d4e8aa5d7f024c6656a23f176c85870",
+  "canopy/1_2.bin": "b50876e2a584b74fdaa1a91747923b92e6a031a05506d8803b435f80445dc8cf",
+  "canopy/1_3.bin": "c0179bb2b3e0dd8575d906ad50ea919ec8eda52ceb7bd6761c1c325a6aca51f1",
+  "canopy/1_4.bin": "4597df6b9cc7134f12711826bf053313c60635e2c215d96daf849b3dff9a13ad",
+  "canopy/1_5.bin": "1ab5f8699321f0a1e0b1920629b155f459b5cee99113d4e1bb020193b2c0cfe2",
+  "canopy/2_0.bin": "c312ab09fe95b2604ebb597b5d76b1fb1f405c3b64029c2d48768755916dc3e4",
+  "canopy/2_1.bin": "5f29caec4a086e5f165607c15059d5d62d9cb84372932dfeed3fefc2c0afd1e4",
+  "canopy/2_2.bin": "5607c3da99fb167efefdb8307594e1fe36a8c9695d2fd9d21807a7f9b29519bd",
+  "canopy/2_3.bin": "5a8472c22efc84571c92e0a4de5aded67c5c050f67b5134dcc469aaef94b65b2",
+  "canopy/2_4.bin": "4b59a74c747a0fa8e2fc694f0a6fc65b6a909cdcdaacd875614704509c1653ea",
+  "canopy/2_5.bin": "2e6adddb9cd302bccf7cc307adb715cece666596381afee494dc964b7589e578",
+  "canopy/3_0.bin": "57ab9806bf04c162563c787d45ac1ff9e145d8b9b9f46057bb469f1cc5058e95",
+  "canopy/3_1.bin": "26a61b1734ddd8f43459fb747c91d6c39777b40111f028f4c393cb9a4711d144",
+  "canopy/3_2.bin": "3e8023b3f3600982787d0c8809378fd10c2d2b944d381ba88045210c1263fa81",
+  "canopy/3_3.bin": "c200274474628a4fc65417c5c42323203e848cc35a1c33acfc83ccb551a851f7",
+  "canopy/3_4.bin": "389b87a18b5407ac6defa18bdcff26fd5fe8830e576bf95528f59808cf1cace4",
+  "canopy/3_5.bin": "2ef0f5db831bc14bec1cc0e8972f83433bfbddb1fde4d87fa9dbc544e718eede",
+  "canopy/4_0.bin": "ce60383076b762b805a4ffd54d5729b2d44f45b25d0d6ca5fd3c00ea10591692",
+  "canopy/4_1.bin": "3c156a5ef010266c812f8768c5c8e2e07c5998aa71cdf6bc6db33176785a808f",
+  "canopy/4_2.bin": "529202d0c75479e65110b566641ad4c0e757c1ab7245781b07962d06af42cd02",
+  "canopy/4_3.bin": "1479456f9f8e7659d02fbec8ebd1ec1f5c7d315bffc4594132291f38465eda98",
+  "canopy/4_4.bin": "04e89a8aa0748134f378661bfc9910d9be5971401f4a9dc1e89e324176f7b928",
+  "canopy/4_5.bin": "c656728b53ee56bb34333d2c885ffff08d41e577052fa258e2b7ff768dab8f6a",
+  "canopy/5_0.bin": "d7ece17d6e6809bdf6a731551ff61c9369035aa0722e26f489dd81d7ed0bc902",
+  "canopy/5_1.bin": "6e7b360d0f7467ae9623ecd21d0e3f9c4961ea4eaa58b20e816a301f5446577f",
+  "canopy/5_2.bin": "9faf33d292017fc341231eb223439500eef522e445081ff76790260033a05eda",
+  "canopy/5_3.bin": "0cabdc1899abd26dffe172bd25d2c49dca0fbd8309dbb638d71709ac76bb4dbf",
+  "canopy/5_4.bin": "934122731adf3332a11b79f737360f65ab9b549f8f1fe09e1d3f30f36fafbb82",
+  "canopy/5_5.bin": "84817309189507f778363371fb92d6fef61f9de500c5a61d5a94d845a909cd66",
+  "dam.json": "cc84b38ef29c8f375792a23b1acf550207a89fc67cac4a662e03457735e0169a",
+  "hero/6_6.bin": "38c2d4e8aad573c6c5145d11dcb14cd192aa149f11da58a17ff56eea4665921c",
+  "hero/6_7.bin": "ff32c8be434d8eb8685ef89091ba5d649b64422bbe4cb13d8c2297eab2cf8aff",
+  "hero/6_8.bin": "e8b3c7b8bf7382a8c2310e6e35336e1d70276feea83239393361cdefd697c303",
+  "hero/6_9.bin": "1f3ef139acf58633b02af107e9e4b2c4f14ccaa1f86496e2613c48706a2314ac",
+  "hero/7_6.bin": "faef9edab006702e2365014dedef21b4c6755d3f91ddc3135fdc8486bdad3c98",
+  "hero/7_7.bin": "74a8f647e3f45816a30be6acb1220d879ee22d0cad23b136c2a4a33eb7d528bc",
+  "hero/7_8.bin": "3db7e6e3a34e2a64847d36bf20da699fd47af231a641f26930bd2b9b2d9e1825",
+  "hero/7_9.bin": "f2d5f9e94bc8d921c84687826a630b173156055ae1c57693e6454512ecd5d3fa",
+  "hero/8_6.bin": "1cc6832f0d933a64f1bdb0b0c6ef8a3569e5c539ed8b84adb211047afd45068d",
+  "hero/8_7.bin": "90395428861eef1f2ce8c720f51bc70299828c88a5d56090c15a1fd80af9b87c",
+  "hero/8_8.bin": "0ffb07b3a5401ce523da3e870334c03b7fbdbf8ad6fef3fefa74ef2bd890d207",
+  "hero/8_9.bin": "266e3ae63159763c7f6d6e579f0b7e0453dbb70a368eb709f55e0b6fb175310a",
+  "hero/9_6.bin": "b812bb47bd47fdd2e84b03e1814e908390cd4f43ee3b4884d053703467db8a04",
+  "hero/9_7.bin": "b812bb47bd47fdd2e84b03e1814e908390cd4f43ee3b4884d053703467db8a04",
+  "hero/9_8.bin": "4bb45f025774c574e9bf76d454299b7e98d8de1328167b07d00373bd8ac39567",
+  "hero/9_9.bin": "eb3ba53519f86bad15bfc6dd5e66cbc835ac9be797fde4f4ced7a4eeaeaa357a",
+  "imagery/hero.jpg": "d795bf61cf94bb89b4033b4ed983f91a600f2b1e2a02a4c82a48ed23d543c322",
+  "imagery/ring.jpg": "cd847de46f31025c7e349cc3821e6b22ce8c8101e55b5b3439045863f5b01240",
+  "masks/hero.png": "fdcd1f7adf446fafe3b8898f7bdd83ff9b69e43467cb840cb975271177352dcb",
+  "masks/ring.png": "8b3602acd9acecf514fa8a38b518bbf863b4b65b852f7202f6be4e1123710441",
+  "osm/buildings.json": "506a92f9c992773312d8e3caca4f95eec68376ae09ba0865f6e2ab79676023db",
+  "osm/landuse.json": "22d59393f8caaef3204d10c04aba7612aa470164aa426c7aa6d26a31dc031518",
+  "osm/power.json": "5ebb236b1a89bff47bea2692a432651b1a80df0e9acf51ef7f75de6bca9a24a8",
+  "osm/roads.json": "d4c39e9510e770a9b111a38dd9af8223015283a33b849d65e282b220084074c2",
+  "osm/trees.json": "4a028cd94f614be56702762f19f90193f257cf7b7f402738f294beccc400b47f",
+  "water.json": "e94eee2eb2dacce4081d6619c1f98a41da5119f08cc8fcb633e3174c68d91725"
+ }
+}
