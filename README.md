@@ -5,6 +5,7 @@ Terrain tiles, imagery and map data for the Itaipu map of
 River at real scale, a 10.24 km hero square around the dam and a 40.96 km
 ring of terrain around it. The simulator fetches these files at run time;
 this repository is served as a static site for that.
+FDFPV and this data repository are made by [fdflabs.com](https://fdflabs.com).
 
 The format is the contract in the simulator's `docs/ITAIPU-PLAN.md`
 (section 14), and `manifest.json` lists every file with its checksum. The
